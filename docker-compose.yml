@@ -1,0 +1,45 @@
+version: '3.3'
+
+volumes:
+  pg_data:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:15.3-alpine
+    env_file: ./.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    image: vikv/foodgram_backend
+    env_file: ./.env
+    depends_on:
+      - db
+    volumes:
+      - static:/app/static
+      - media:/app/media
+
+  frontend:
+    image: vikv/foodgram_frontend
+    depends_on:
+      - backend
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static/
+
+  gateway:
+    image: vikv/foodgram_gateway
+    ports:
+      - 8888:80
+    volumes:
+      - static:/static
+      - media:/media
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: backend frontend gateway

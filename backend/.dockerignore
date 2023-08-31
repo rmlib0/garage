@@ -1,3 +1,13 @@
+.env
+venv
+.git
+db.sqlite3
+
+# Файл .dockerignore
+venv
+.git
+db.sqlite3
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,6 +138,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# .idea
-.idea
-.vscode
+frontend/node_modules
