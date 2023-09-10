@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 User = get_user_model()
 
 
@@ -31,11 +32,32 @@ class Tag(models.Model):
 
 
 class SensorType(models.Model):
-    type = models.Choices()
+    CHOICES = (
+        ('PIR', 'Passive infrared motion sensor'),
+        ('LDR', 'Light Dependent Resistor'),
+        ('DHT', 'Temperature and humidity sensor'),
+        ('PS', 'Pressure sensor'),
+    )
+    type = models.CharField(
+        max_length=300,
+        choices=CHOICES
+    )
 
+    class Meta:
+        verbose_name = 'Sensor type'
+        verbose_name_plural = 'Sensor types'
+        ordering = ['id']
 
-class SensorInRoom(models.Model):
-    ...
+    def get_full_name(self, sensor_type: str) -> str:
+        return {
+            'PIR': 'Passive infrared motion sensor',
+            'LDR': 'Light Dependent Resistor',
+            'DHT': 'Temperature and humidity sensor',
+            'PS': 'Pressure sensor',
+        }.get(sensor_type)
+
+    def __str__(self):
+        return f'{self.type} : {self.get_full_name(self.type)}'
 
 
 class Sensor(models.Model):
@@ -56,33 +78,75 @@ class Manufacturer(models.Model):
 
 
 class Garage(models.Model):
-    ...
+    name = models.CharField(
+        verbose_name=_('garage name'),
+        max_length=200
+    )
+    description = models.CharField(
+        verbose_name=_('description'),
+        max_length=255,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = 'Garage'
+        verbose_name_plural = 'Garages'
+        ordering = ['name']
+
+    def __str__(self):
+        return f'{self.name}'
 
 
-class FloorInGarage(models.Model):
-    ...
+class Floor(models.Model):
+    name = models.CharField(
+        verbose_name=_('floor name'),
+        max_length=200
+    )
+    description = models.CharField(
+        verbose_name=_('description'),
+        max_length=255,
+        blank=True
+    )
+    garage = models.ForeignKey(
+        Garage,
+        on_delete=models.CASCADE,
+        related_name='floors'
+    )
+
+    class Meta:
+        verbose_name = 'Floor'
+        verbose_name_plural = 'Floors'
+        ordering = ['name']
+
+    def __str__(self):
+        return f'{self.name} in № {self.garage.name} garage'
 
 
 class Room(models.Model):
-    author = models.ForeignKey(
-        User,
-        verbose_name='Author',
-        on_delete=models.CASCADE,
-        related_name='recipes'
-    )
     name = models.CharField(
         verbose_name='Room',
         max_length=200
     )
-    sensors = models.ManyToManyField(
+    description = models.CharField(
+        verbose_name=_('description'),
+        max_length=255,
+        blank=True
+    )
+    floor = models.ForeignKey(
+        Floor,
+        on_delete=models.CASCADE,
+        related_name='rooms'
+    )
+    sensors = models.ForeignKey(
         Sensor,
-        through='SensorInRoom',
+        on_delete=models.CASCADE,
         verbose_name=_('sensors'),
     )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Tags',
-        related_name='recipes',
+        related_name='rooms',
+        blank=True
     )
 
     class Meta:

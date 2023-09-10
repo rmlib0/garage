@@ -1,9 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+
+from .managers import AccountManager
 
 
 def is_file_field_or_image_field(
@@ -47,18 +50,36 @@ def delete_file_if_unused(model, instance, field, instance_file_field):
 
 
 class Account(AbstractUser, PermissionsMixin):
-    patronymic = models.CharField(
-        _('patronymic'),
-        max_length=150,
-        blank=True
+    username = None
+    email = models.EmailField(
+        _('email address'),
+        unique=True
+    )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = AccountManager()
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        return self.email
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        Account,
+        on_delete=models.CASCADE,
+        verbose_name=_('user'),
+        related_name='profile'
+    )
+    date_of_birth = models.DateField(
+        _('date of birth'),
     )
     biography = models.TextField(
         _('biography'),
         blank=True
-    )
-    email = models.EmailField(
-        _('email address'),
-        unique=True
     )
     phone_number = PhoneNumberField(
         _('phone number'),
@@ -73,11 +94,3 @@ class Account(AbstractUser, PermissionsMixin):
         null=True,
         blank=True
     )
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
-    class Meta:
-        ordering = ['id']
-
-    def __str__(self):
-        return self.email
