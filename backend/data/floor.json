@@ -1,0 +1,32 @@
+[
+    {
+        "name": "1st",
+        "description": "1st floor in garage N 491",
+        "garage": "491"
+    },
+    {
+        "name": "2nd",
+        "description": "2nd floor in garage N 491",
+        "garage": "491"
+    },
+    {
+        "name": "basement",
+        "description": "basement floor in garage N 491",
+        "garage": "491"
+    },
+    {
+        "name": "1st",
+        "description": "1st floor in garage N 492",
+        "garage": "492"
+    },
+    {
+        "name": "2nd",
+        "description": "2nd floor in garage N 492",
+        "garage": "492"
+    },
+    {
+        "name": "basement",
+        "description": "basement floor in garage N 492",
+        "garage": "492"
+    }
+]

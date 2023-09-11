@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Da Gao Inc.",
+        "description": "Test manufacturer 1",
+        "country": "China",
+        "url": "https://some.site/"
+    },
+    {
+        "name": "Hao Tian Inc.",
+        "description": "Test manufacturer 2",
+        "country": "China",
+        "url": "https://jin-tian.site/"
+    }
+]

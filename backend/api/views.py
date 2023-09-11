@@ -6,8 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 
-from sensors.models import (Garage, Manufacturer, Room, Sensor,
-                            SensorType, Tag, User)
+from sensors.models import Garage, Manufacturer, Room, Sensor, Tag, User
 
 from .mixins import ListRetrieveViewSet
 from .permissions import IsCurrentUserOrAdminOrReadOnly
